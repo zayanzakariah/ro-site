@@ -1,0 +1,172 @@
+{
+  "name": "Appointment Recovery — Clinic WhatsApp Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "/webhook/appointment-missed",
+        "method": "POST",
+        "authentication": "predefined",
+        "credentialsType": "httpBasicAuth"
+      },
+      "name": "Webhook — Missed Appointment",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 100]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "phone",
+              "value": "{{ $json.body.phone }}"
+            },
+            {
+              "name": "patientName",
+              "value": "{{ $json.body.patient_name }}"
+            },
+            {
+              "name": "appointmentDate",
+              "value": "{{ $json.body.appointment_date }}"
+            }
+          ]
+        }
+      },
+      "name": "Extract Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [450, 100]
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-sonnet",
+        "anthropic_apiKey": "{{ env.ANTHROPIC_API_KEY }}",
+        "messages": {
+          "messageValues": [
+            {
+              "content": "You are a clinic appointment recovery assistant. Classify this missed appointment reason and craft a WhatsApp response.\n\nPatient: {{ $json.patientName }}\nMissed appointment: {{ $json.appointmentDate }}\nContext: Generic clinic scenario\n\nRespond with JSON: {\"class\": \"reschedule\"|\"lost\"|\"followup\", \"message\": \"<hindi-english mix WhatsApp msg max 160 chars>\"}"
+            }
+          ]
+        }
+      },
+      "name": "Claude — Classify Intent",
+      "type": "n8n-nodes-base.anthropic",
+      "typeVersion": 1,
+      "position": [650, 100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.aisensy.com/campaign/t1/api/v2",
+        "authentication": "generic",
+        "genericAuthType": "httpHeaderAuth",
+        "headers": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ env.AISENSY_API_KEY }}"
+            }
+          ]
+        },
+        "body": {
+          "contentType": "application/json",
+          "values": {
+            "apiKey": "{{ env.AISENSY_API_KEY }}",
+            "campaignName": "clinic-recovery",
+            "destination": "{{ $json.phone }}",
+            "userName": "clinic_bot",
+            "templateParams": ["{{ $json.patientName }}", "{{ $json.appointmentDate }}"],
+            "source": "clinic-recovery-bot",
+            "media": {
+              "type": "text"
+            }
+          }
+        }
+      },
+      "name": "AiSensy — Send WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 100]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "schema": [
+          {
+            "column": "phone",
+            "type": "text"
+          },
+          {
+            "column": "patient_name",
+            "type": "text"
+          },
+          {
+            "column": "classification",
+            "type": "text"
+          },
+          {
+            "column": "message_sent",
+            "type": "text"
+          },
+          {
+            "column": "created_at",
+            "type": "text"
+          }
+        ],
+        "table": "conversation_logs",
+        "connection": "{{ env.SUPABASE_URL }}",
+        "database": "default"
+      },
+      "name": "Supabase — Log Interaction",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1050, 100]
+    }
+  ],
+  "connections": {
+    "Webhook — Missed Appointment": {
+      "main": [
+        [
+          {
+            "node": "Extract Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Variables": {
+      "main": [
+        [
+          {
+            "node": "Claude — Classify Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude — Classify Intent": {
+      "main": [
+        [
+          {
+            "node": "AiSensy — Send WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AiSensy — Send WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Supabase — Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
