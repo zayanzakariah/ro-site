@@ -346,6 +346,101 @@
     }
     .service-card a:hover { text-decoration: underline; }
 
+    /* === AUTOMATIONS === */
+    #automations {
+      padding: var(--section-pad);
+      background: var(--card);
+    }
+    .auto-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .auto-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      position: relative;
+    }
+    .auto-card h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .auto-card .auto-niche {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .auto-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .auto-card ul li {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      padding-left: 18px;
+      position: relative;
+    }
+    .auto-card ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .auto-core {
+      grid-column: 1 / -1;
+      background: var(--dark);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 36px 32px;
+    }
+    .auto-core h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+    .auto-core .auto-niche {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .auto-core ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+    }
+    .auto-core ul li {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      padding-left: 18px;
+      position: relative;
+    }
+    .auto-core ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
     /* === SYSTEMS INTRO (scrolls normally before the pin) === */
     #systems-intro {
       padding: 120px 8% 80px;
@@ -807,6 +902,8 @@
     @media (max-width: 1024px) {
       .services-grid, .showcase-grid { grid-template-columns: 1fr; }
       .team-grid { grid-template-columns: 1fr; }
+      .auto-grid { grid-template-columns: 1fr; }
+      .auto-core ul { flex-direction: column; gap: 4px; }
     }
     @media (max-width: 768px) {
       :root { --section-pad: 80px 5%; }
@@ -847,10 +944,10 @@
     </a>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li>
-      <li><a href="#systems">Systems</a></li>
+      <li><a href="#automations">Automations</a></li>
+      <li><a href="#systems">Case Studies</a></li>
       <li><a href="#showcase">Pricing</a></li>
       <li><a href="#process">Process</a></li>
-      <li><a href="#team">Team</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Start a project</a>
   </nav>
@@ -968,6 +1065,72 @@
         <h3>Workflow Automation</h3>
         <p>CRM pipelines, WhatsApp drip sequences, appointment reminders, lead scoring — the operational backbone that lets a 2-person team deliver like a 15-person agency.</p>
         <a href="#contact">Learn more →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Automations by niche -->
+  <section id="automations">
+    <p class="section-label">Workflow automation</p>
+    <h2 class="section-heading">Built for<br>your niche.</h2>
+    <p style="font-size:16px;color:var(--muted);max-width:560px;margin-top:-40px;">Every business gets a core automation stack. Then we add niche-specific flows that match how your customers actually buy.</p>
+
+    <div class="auto-grid">
+      <div class="auto-core fade-up">
+        <div class="auto-niche">Every client gets</div>
+        <h4>Core Automation Stack</h4>
+        <ul>
+          <li>WhatsApp drip sequences</li>
+          <li>Lead scoring + routing</li>
+          <li>Appointment reminders</li>
+          <li>Google review requests</li>
+          <li>CRM pipeline setup</li>
+          <li>Payment follow-ups</li>
+        </ul>
+      </div>
+
+      <div class="auto-card fade-up">
+        <div class="auto-niche">Medical + Dental Clinics</div>
+        <h4>Patient Flow</h4>
+        <ul>
+          <li>Booking → confirmation → reminder</li>
+          <li>Post-visit follow-up + review request</li>
+          <li>Missed appointment re-engagement</li>
+          <li>Treatment plan reminders</li>
+        </ul>
+      </div>
+
+      <div class="auto-card fade-up">
+        <div class="auto-niche">Immigration Consultants</div>
+        <h4>Case Pipeline</h4>
+        <ul>
+          <li>Inquiry → document checklist sent</li>
+          <li>Eligibility pre-screen via AI</li>
+          <li>Counselor auto-assignment</li>
+          <li>Visa status update sequences</li>
+        </ul>
+      </div>
+
+      <div class="auto-card fade-up">
+        <div class="auto-niche">Real Estate</div>
+        <h4>Buyer Journey</h4>
+        <ul>
+          <li>Site visit booking → broker assignment</li>
+          <li>EMI calculator follow-up drip</li>
+          <li>New listing alerts to warm leads</li>
+          <li>Launch event + festive campaign blasts</li>
+        </ul>
+      </div>
+
+      <div class="auto-card fade-up">
+        <div class="auto-niche">Education + Coaching</div>
+        <h4>Enrollment Funnel</h4>
+        <ul>
+          <li>Inquiry → course brochure auto-sent</li>
+          <li>Demo class booking flow</li>
+          <li>Enrollment + fee reminder sequences</li>
+          <li>Parent communication updates</li>
+        </ul>
       </div>
     </div>
   </section>
